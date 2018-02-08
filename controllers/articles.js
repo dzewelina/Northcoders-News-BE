@@ -29,12 +29,16 @@ const updateArticleVote = (req, res, next) => {
   const articleId = req.params.article_id;
   const vote = req.query.vote;
 
-  Articles.findById(commentId, { __v: false }).lean()
+  Articles.findById(articleId, { __v: false }).lean()
     .then(article => {
-      if (vote === 'up') article.votes++;
-      if (vote === 'down') article.votes--;
-      res.send({ article });
+      let votesNumber = article.votes;
+      if (vote === 'up') votesNumber++;
+      if (vote === 'down') votesNumber--;
+      return votesNumber;
     })
+    .then(newVotes => Articles.findByIdAndUpdate(articleId, { votes: newVotes }))
+    .then(() => Articles.findById(articleId))
+    .then(article => res.send({ article }))
     .catch(next);
 };
 
@@ -43,6 +47,6 @@ const getArticleById = (req, res, next) => {
   Articles.findById(articleId, { __v: false }).lean()
     .then(article => res.send({ article }))
     .catch(next);
-}
+};
 
 module.exports = { getAllArticles, getCommentsByArticle, addComment, updateArticleVote, getArticleById };
