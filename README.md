@@ -45,7 +45,7 @@ GET /api/topics
 Get all the topics
 
 ```
-GET /api/topics/:topic_id/articles
+GET /api/topics/:topic/articles
 ```
 Return all the articles for a certain topic
 
