@@ -1,17 +1,23 @@
 if (!process.env.NODE_ENV) process.env.NODE_ENV = 'dev';
 
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var app = express();
-var config = require('./config');
-var db = config.DB[process.env.NODE_ENV] || process.env.DB;
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 mongoose.Promise = Promise;
+const config = require('./config');
+const db = config.DB[process.env.NODE_ENV] || process.env.DB;
 
-mongoose.connect(db, {useMongoClient: true})
+mongoose.connect(db, { useMongoClient: true })
   .then(() => console.log('successfully connected to', db))
   .catch(err => console.log('connection failed', err));
 
+const apiRouter = require('./routes');
+
+const app = express();
 app.use(bodyParser.json());
+
+app.use('/api', apiRouter);
+app.use('/*', (req, res) => res.status(404).send('Page not found'));
+app.use((err, req, res, next) => res.status(500).send(err));
 
 module.exports = app;
