@@ -96,6 +96,7 @@ describe('/api', () => {
         });
     });
   });
+
   describe('/articles/:article_id/comments', () => {
     it('GET returns an object with all comments for a certain article', () => {
       const articleId = data.articles[0]._id.toString();
@@ -131,6 +132,7 @@ describe('/api', () => {
         });
     });
   });
+
   describe('/comments/:comment_id', () => {
     it('PUT increases or decreases the votes of a comment by one', () => {
       const commentId = data.comments[0]._id.toString();
@@ -162,6 +164,20 @@ describe('/api', () => {
         .then(() => Comments.find({}).lean())
         .then(comments => {
           expect(comments.length).to.equal(1);
+        });
+    });
+  });
+
+  describe('/users/:username', () => {
+    it('GET returns an object with the profile data for the specified user ', () => {
+      const { username } = data.user;
+      return request(app)
+        .get(`/api/users/${username}`)
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.user).to.be.an('object');
+          expect(res.body.user.username).to.equal(username);
         });
     });
   });
