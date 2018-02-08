@@ -181,4 +181,19 @@ describe('/api', () => {
         });
     });
   });
+
+  describe('/users/:username/articles', () => {
+    it('GET returns an object with all articles for a specified user', () => {
+      const { username } = data.user;
+      return request(app)
+        .get(`/api/users/${username}/articles`)
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles.length).to.equal(2);
+          expect(res.body.articles[0].created_by).to.equal(username);
+        });
+    });
+  });
 });
