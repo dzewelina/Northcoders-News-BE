@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const topicsRouter = require('./topics');
 const articlesRouter = require('./articles');
-const commentsRouter = require('./commenys');
+const commentsRouter = require('./comments');
 
 router.use('/topics', topicsRouter);
 router.use('/articles', articlesRouter);
