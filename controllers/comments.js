@@ -13,4 +13,15 @@ const updateCommentVote = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { updateCommentVote };
+const deleteComment =(req, res, next) => {
+  const commentId = req.params.comment_id;
+
+  Comment.findById(commentId, { __v: false }).lean()
+    .then(comment => {
+      if(comment.created_by === 'northcoder') return Comment.remove({_id: commentID})
+        else res.send({ reason: 'User not authorised to delete' });
+    })
+    .catch(next);
+}
+
+module.exports = { updateCommentVote, deleteComment };
