@@ -4,21 +4,25 @@ const updateCommentVote = (req, res, next) => {
   const commentId = req.params.comment_id;
   const { vote } = req.query;
 
-  Comment.findById(commentId, { __v: false }).lean()
+  Comments.findById(commentId, { __v: false }).lean()
     .then(comment => {
-      if (vote === 'up') comment.votes++;
-      if (vote === 'down') comment.votes--;
-      res.send({ comment })
+      let votesNumber = comment.votes;
+      if (vote === 'up') votesNumber++;
+      if (vote === 'down') votesNumber--;
+      return votesNumber;
     })
+    .then(newVotes => Comments.findByIdAndUpdate(commentId, { votes: newVotes }))
+    .then(() => Comments.findById(commentId))
+    .then(comment => res.send({ comment }))
     .catch(next);
 };
 
 const deleteComment = (req, res, next) => {
   const commentId = req.params.comment_id;
 
-  Comment.findById(commentId, { __v: false }).lean()
+  Comments.findById(commentId, { __v: false }).lean()
     .then(comment => {
-      if (comment.created_by === 'northcoder') return Comment.remove({ _id: commentId })
+      if (comment.created_by === 'northcoder') return Comments.remove({ _id: commentId })
       else res.send({ reason: 'User not authorised to delete' });
     })
     .catch(next);
