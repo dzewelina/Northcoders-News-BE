@@ -19,9 +19,16 @@ describe('/api', () => {
       .then(() => mongoose.disconnect())
   });
 
-  describe('', () => {
-    it('', () => {
-
+  describe('/topics', () => {
+    it('GET returns an object with all topics', () => {
+      return request(app)
+        .get('/api/topics')
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.topics).to.be.an('array');
+          expect(res.body.topics.length).to.equal(3);
+        })
     });
   });
 });
