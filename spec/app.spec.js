@@ -74,7 +74,7 @@ describe('/api', () => {
           expect(res.body.article._id).to.equal(articleId);
         });
     });
-    it('PUT increase or decrease the votes of an article by one', () => {
+    it('PUT increases or decreases the votes of an article by one', () => {
       const articleId = data.articles[0]._id.toString();
       return request(app)
         .put(`/api/articles/${articleId}?vote=up`)
@@ -85,7 +85,7 @@ describe('/api', () => {
           expect(res.body.article._id).to.equal(articleId);
           expect(res.body.article.votes).to.equal(1);
           return request(app)
-            .put(`/api/articles/${articleId}?vote=down`)
+            .put(`/api/articles/${articleId}?vote=down`);
         })
         .then(res => {
           expect(res.status).to.be.equal(200);
@@ -93,7 +93,42 @@ describe('/api', () => {
           expect(res.body.article).to.be.an('object');
           expect(res.body.article._id).to.equal(articleId);
           expect(res.body.article.votes).to.equal(0);
+        });
+    });
+  });
+  describe('/articles/:article_id/comments', () => {
+    it('GET returns an object with all comments for a certain article', () => {
+      const articleId = data.articles[0]._id.toString();
+      return request(app)
+        .get(`/api/articles/${articleId}/comments`)
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.comments).to.be.an('array');
+          expect(res.body.comments[0].belongs_to).to.eql(articleId);
+          expect(res.body.comments.length).to.equal(2);
+        });
+    });
+    it('POST adds a new comment to an article and returns an object with new comment', () => {
+      const newComment = { comment: 'This is my new comment' };
+      const articleId = data.articles[0]._id.toString();
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send(newComment)
+        .expect(201)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.comment).to.be.an('object');
+          expect(res.body.comment.body).to.equal('This is my new comment');
+          expect(res.body.comment.belongs_to).to.equal(articleId);
+          expect(res.body.comment.votes).to.equal(0);
+          expect(res.body.comment.created_by).to.equal('northcoder');
+          return request(app)
+            .get(`/api/articles/${articleId}/comments`);
         })
+        .then(res => {
+          expect(res.body.comments.length).to.equal(3);
+        });
     });
   });
 });
