@@ -86,3 +86,8 @@ Deletes a comment
 GET /api/users/:username
 ```
 Returns a JSON object with the profile data for the specified user.
+
+```
+GET /api/users/:username/articles
+```
+Return all the articles for a certain user
