@@ -31,4 +31,18 @@ describe('/api', () => {
         })
     });
   });
+
+  describe('/topics/:topic/articles', () => {
+    it('GET returns an object with all articles for a certain topic', () => {
+      return request(app)
+        .get('/api/topics/cats/articles')
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles.length).to.equal(1);
+          expect(res.body.articles[0].belongs_to).to.equal('cats');
+        });
+    });
+  });
 });
