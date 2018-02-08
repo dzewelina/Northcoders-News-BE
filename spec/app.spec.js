@@ -131,4 +131,38 @@ describe('/api', () => {
         });
     });
   });
+  describe('/comments/:comment_id', () => {
+    it('PUT increases or decreases the votes of a comment by one', () => {
+      const commentId = data.comments[0]._id.toString();
+      return request(app)
+        .put(`/api/comments/${commentId}?vote=up`)
+        .expect(200)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.comment).to.be.an('object');
+          expect(res.body.comment._id).to.equal(commentId);
+          expect(res.body.comment.votes).to.equal(1);
+          return request(app)
+            .put(`/api/comments/${commentId}?vote=down`);
+        })
+        .then(res => {
+          expect(res.status).to.be.equal(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.comment).to.be.an('object');
+          expect(res.body.comment._id).to.equal(commentId);
+          expect(res.body.comment.votes).to.equal(0);
+        });
+    });
+    it('DELETE deletes a certain comment', () => {
+      const commentId = data.comments[0]._id.toString();
+      const { Comments } = require('../models/models');
+      console.log(typeof Comments)
+      return request(app)
+        .delete(`/api/comments/${commentId}`)
+        .then(() => Comments.find({}).lean())
+        .then(comments => {
+          expect(comments.length).to.equal(1);
+        });
+    });
+  });
 });
