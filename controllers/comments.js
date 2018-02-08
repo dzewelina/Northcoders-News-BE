@@ -22,9 +22,10 @@ const deleteComment = (req, res, next) => {
 
   Comments.findById(commentId, { __v: false }).lean()
     .then(comment => {
-      if (comment.created_by === 'northcoder') return Comments.remove({ _id: commentId })
+      if (comment.created_by === 'northcoder') return Comments.remove({ _id: commentId });
       else res.send({ reason: 'User not authorised to delete' });
     })
+    .then(() => res.end())
     .catch(next);
 };
 
