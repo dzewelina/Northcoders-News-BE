@@ -2,7 +2,7 @@ const { Comments } = require('../models/models');
 
 const updateCommentVote = (req, res, next) => {
   const commentId = req.params.comment_id;
-  const vote = req.query.vote;
+  const { vote } = req.query;
 
   Comment.findById(commentId, { __v: false }).lean()
     .then(comment => {
@@ -13,15 +13,15 @@ const updateCommentVote = (req, res, next) => {
     .catch(next);
 };
 
-const deleteComment =(req, res, next) => {
+const deleteComment = (req, res, next) => {
   const commentId = req.params.comment_id;
 
   Comment.findById(commentId, { __v: false }).lean()
     .then(comment => {
-      if(comment.created_by === 'northcoder') return Comment.remove({_id: commentID})
-        else res.send({ reason: 'User not authorised to delete' });
+      if (comment.created_by === 'northcoder') return Comment.remove({ _id: commentId })
+      else res.send({ reason: 'User not authorised to delete' });
     })
     .catch(next);
-}
+};
 
 module.exports = { updateCommentVote, deleteComment };
