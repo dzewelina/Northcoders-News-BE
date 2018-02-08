@@ -38,4 +38,11 @@ const updateArticleVote = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getAllArticles, getCommentsByArticle, addComment, updateArticleVote };
+const getArticleById = (req, res, next) => {
+  const articleId = req.params.article_id;
+  Articles.findById(articleId, { __v: false }).lean()
+    .then(article => res.send({ article }))
+    .catch(next);
+}
+
+module.exports = { getAllArticles, getCommentsByArticle, addComment, updateArticleVote, getArticleById };

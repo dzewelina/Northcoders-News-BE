@@ -66,6 +66,11 @@ Add a new comment to an article. This route requires a JSON body with a comment 
 e.g: {"comment": "This is my new comment"}
 
 ```
+GET /api/articles/:article_id
+```
+Get an article by article id
+
+```
 PUT /api/articles/:article_id
 ```
 Increment or Decrement the votes of an article by one. This route requires a vote query of 'up' or 'down'
