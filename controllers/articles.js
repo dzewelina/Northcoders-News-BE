@@ -23,6 +23,19 @@ const addComment = (req, res, next) => {
   newComment.save()
     .then(comment => res.status(201).send({ comment }))
     .catch(next);
-}
+};
 
-module.exports = { getAllArticles, getCommentsByArticle, addComment };
+const updateArticleVote = (req, res, next) => {
+  const articleId = req.params.article_id;
+  const vote = req.query.vote;
+
+  Articles.findById(commentId, { __v: false }).lean()
+    .then(article => {
+      if (vote === 'up') article.votes++;
+      if (vote === 'down') article.votes--;
+      res.send({ article });
+    })
+    .catch(next);
+};
+
+module.exports = { getAllArticles, getCommentsByArticle, addComment, updateArticleVote };
