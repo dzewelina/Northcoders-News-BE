@@ -1,53 +1,79 @@
 ## Northcoders News API
 
-### Background
+## About
+A RESTful API for Northcoders News, a news aggregation site based on Reddit. 
 
-We will be building the API which we used in the Northcoders News Sprint during the
-Front End block of the course. Your mongoose models and a Database seed file have been done for you.
+Built with Node.js, Express.js, MongoDB and Mongoose.
 
-Look closely at the response you get for each route on http://northcoders-news-api.herokuapp.com/ You will notice that we also send data such as the comment and vote count for each article. You will need to think carefully about how to do this in your API.
+Testing was carried out using Mocha, Chai and Supertest.
 
-You will need to get all your routes built up first as you can share the functionality between you `GET comments by id` route and the comment count on the articles response for example.
+## Set Up
+- To check if ```Node.js``` is installed on your machine open a terminal window and enter:
+  ```
+  $ node -v
+  ```
+  If you do not already have Node.js installed follow the instructions on [this guide](https://nodejs.org/en/download/package-manager/).
 
-### Mongoose Documentation
+- To check if ```npm``` is installed on your machine enter this command in you terminal window: 
+  ```
+  $ npm -v
+  ```
+  If you do not have npm already installed follow [this guide](https://www.npmjs.com/get-npm) to set it up.
 
-The below are all model methods that you call on your models.
+- To check if ```git``` is installed on your machine enter the following in your terminal window: 
+  ```
+  $ git --version
+  ```
+  If you do not already have git installed on your machine follow [this guide](https://git-scm.com/).
 
-* [find](http://mongoosejs.com/docs/api.html#model_Model.find)
-* [findOne](http://mongoosejs.com/docs/api.html#model_Model.findOne)
-* [findOneAndUpdate](http://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate)
-* [findOneAndRemove](http://mongoosejs.com/docs/api.html#model_Model.findOneAndRemove)
-* [findById](http://mongoosejs.com/docs/api.html#model_Model.findById)
-* [findByIdAndUpdate](http://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate)
-* [findByIdAndRemove](http://mongoosejs.com/docs/api.html#model_Model.findByIdAndRemove)
-* [update](http://mongoosejs.com/docs/api.html#model_Model.update)
+- To check if ```MongoDB``` is installed on your machine enter this command in you terminal window:
+  ```
+  $ mongod --version
+  ```
+  If you do not have MongoDB already installed, follow [this guide](https://docs.mongodb.com/manual/installation/).
 
-There are also some methods that can be called on the documents that get returned. These are:
+## Installation
 
-* [remove](http://mongoosejs.com/docs/api.html#model_Model-remove)
-* [save](http://mongoosejs.com/docs/api.html#model_Model-save)
-* [count](http://mongoosejs.com/docs/api.html#model_Model.count)
+To run this project you will need to clone this repository onto your local machine.
+  ```
+  $ git clone https://github.com/dzewelina/BE-FT-northcoders-news.git
+  ```
+Navigate inside the folder and install all dependencies by entering the following commands on your terminal window:
+  ```
+  $ cd BE-FT-northcoders-news
+  $ npm install
+  ```
+Open another terminal window and enter the following command to connect to the database and keep it running: 
+  ```
+  $ mongod
+  ```
+In your first terminal window enter the following command to populate the database: 
+  ```
+  $ node seed/seed.js
+  ```
+Finally to run the server enter the following command in your terminal window: 
+  ```
+  $ npm start
+  ```
+This will run the server on port 4000. All endpoints can be found locally on ```http://localhost:4000```.
 
-### Tasks
+## Testing
 
-1. Seed your database with the main seed file `$ node seed/seed.js`
-2. Build your express App
-3. Mount an API Router onto your app
-4. Define the routes described below
-5. Define controller functions for each of your routes
-6. Once you have all your routes start to tackle responding with the vote and comment counts on article requests like this http://northcoders-news-api.herokuapp.com/api/articles
-7. Test your api routes!
+To test the API navigate to the project directory and enter the following command:
+  ```
+  $ npm test
+  ```
 
-### Routes
+## API Routes
 ```
 GET /api/topics
 ```
-Get all the topics
+Returns all the topics
 
 ```
 GET /api/topics/:topic/articles
 ```
-Return all the articles for a certain topic
+Returns all the articles for a certain topic
 
 ```
 GET /api/articles
@@ -57,30 +83,27 @@ Returns all the articles
 ```
 GET /api/articles/:article_id/comments
 ```
-Get all the comments for a individual article
+Returns all the comments for an individual article
 
 ```
 POST /api/articles/:article_id/comments
 ```
-Add a new comment to an article. This route requires a JSON body with a comment key and value pair
-e.g: {"comment": "This is my new comment"}
+Adds a new comment to an article. Requires body with a comment key and value pair, e.g: {"comment": "This is my new comment"}
 
 ```
 GET /api/articles/:article_id
 ```
-Get an article by article id
+Returns an article for specified id
 
 ```
 PUT /api/articles/:article_id
 ```
-Increment or Decrement the votes of an article by one. This route requires a vote query of 'up' or 'down'
-e.g: /api/articles/:article_id?vote=up
+Increment or Decrement the votes of an article by one. Requires a vote query of 'up' or 'down', e.g: /api/articles/:article_id?vote=up
 
 ```
 PUT /api/comments/:comment_id
 ```
-Increment or Decrement the votes of a comment by one. This route requires a vote query of 'up' or 'down'
-e.g: /api/comments/:comment_id?vote=down
+Increment or Decrement the votes of a comment by one. Requires a vote query of 'up' or 'down', e.g: /api/comments/:comment_id?vote=down
 
 ```
 DELETE /api/comments/:comment_id
@@ -90,9 +113,9 @@ Deletes a comment
 ```
 GET /api/users/:username
 ```
-Returns a JSON object with the profile data for the specified user.
+Returns an object with the profile data for the specified user
 
 ```
 GET /api/users/:username/articles
 ```
-Return all the articles for a certain user
+Returns all the articles for a certain user
