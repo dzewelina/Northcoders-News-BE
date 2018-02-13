@@ -14,12 +14,12 @@ describe('/api', () => {
     return mongoose.connection.db.dropDatabase()
       .then(saveTestData)
       .then(savedData => data = savedData)
-      .catch(console.log)
+      .catch(console.log);
   });
 
   after(() => {
     return mongoose.connection.db.dropDatabase()
-      .then(() => mongoose.disconnect())
+      .then(() => mongoose.disconnect());
   });
 
   describe('/topics', () => {
@@ -31,7 +31,7 @@ describe('/api', () => {
           expect(res.body).to.be.an('object');
           expect(res.body.topics).to.be.an('array');
           expect(res.body.topics.length).to.equal(3);
-        })
+        });
     });
   });
 
@@ -45,6 +45,16 @@ describe('/api', () => {
           expect(res.body.articles).to.be.an('array');
           expect(res.body.articles.length).to.equal(1);
           expect(res.body.articles[0].belongs_to).to.equal('cats');
+        });
+    });
+    it('GET returns an object with error status 404 and message if given topic does not exist', () => {
+      return request(app)
+        .get('/api/topics/carrot/articles')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Topic carrot does not exist');
         });
     });
   });
@@ -74,6 +84,26 @@ describe('/api', () => {
           expect(res.body.article._id).to.equal(articleId);
         });
     });
+    it('GET returns an object with error status 404 and message if given article Id does not exist', () => {
+      return request(app)
+        .get('/api/articles/123456789012345678901234')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('GET returns an object with error status 400 and message if given article Id is invalid', () => {
+      return request(app)
+        .get('/api/articles/12345678901234567890123')
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article Id 12345678901234567890123 is invalid - should have 24 characters');
+        });
+    });
     it('PUT increases or decreases the votes of an article by one', () => {
       const articleId = data.articles[0]._id.toString();
       return request(app)
@@ -95,6 +125,37 @@ describe('/api', () => {
           expect(res.body.article.votes).to.equal(0);
         });
     });
+    it('PUT returns an object with error status 404 and message if given article Id does not exist', () => {
+      return request(app)
+        .put('/api/articles/123456789012345678901234?vote=up')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('PUT returns an object with error status 400 and message if given article Id is invalid', () => {
+      return request(app)
+        .put('/api/articles/12345678901234567890123?vote=up')
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article Id 12345678901234567890123 is invalid - should have 24 characters');
+        });
+    });
+    it('PUT returns an object with error status 400 and message if given query is invalid', () => {
+      const articleId = data.articles[0]._id.toString();
+      return request(app)
+        .put(`/api/articles/${articleId}?bote=down`)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Vote query requires up or down vote in the format vote=up or vote=down');
+        });
+    });
   });
 
   describe('/articles/:article_id/comments', () => {
@@ -108,6 +169,26 @@ describe('/api', () => {
           expect(res.body.comments).to.be.an('array');
           expect(res.body.comments[0].belongs_to).to.eql(articleId);
           expect(res.body.comments.length).to.equal(2);
+        });
+    });
+    it('GET returns an object with error status 404 and message if given article Id does not exist', () => {
+      return request(app)
+        .get('/api/articles/123456789012345678901234/comments')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('GET returns an object with error status 400 and message if given article Id is invalid', () => {
+      return request(app)
+        .get('/api/articles/12345678901234567890123/comments')
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article Id 12345678901234567890123 is invalid - should have 24 characters');
         });
     });
     it('POST adds a new comment to an article and returns an object with new comment', () => {
@@ -129,6 +210,80 @@ describe('/api', () => {
         })
         .then(res => {
           expect(res.body.comments.length).to.equal(3);
+        });
+    });
+    it('POST returns an object with error status 404 and message if given article Id does not exist', () => {
+      const newComment = { comment: 'This is my new comment' };
+      return request(app)
+        .post('/api/articles/123456789012345678901234/comments')
+        .send(newComment)
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('POST returns an object with error status 400 and message if given article Id is invalid', () => {
+      const newComment = { comment: 'This is my new comment' };
+      return request(app)
+        .post('/api/articles/12345678901234567890123/comments')
+        .send(newComment)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Article Id 12345678901234567890123 is invalid - should have 24 characters');
+        });
+    });
+    it('POST returns an object with error status 400 and message if new comment is invalid - no body', () => {
+      const articleId = data.articles[0]._id.toString();
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment body must have a comment of type string');
+        });
+    });
+    it('POST returns an object with error status 400 and message if new comment is invalid - empty body', () => {
+      const articleId = data.articles[0]._id.toString();
+      const newComment = {};
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send(newComment)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment body must have a comment of type string');
+        });
+    });
+    it('POST returns an object with error status 400 and message if new comment is invalid - empty comment', () => {
+      const articleId = data.articles[0]._id.toString();
+      const newComment = { comment: '' };
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send(newComment)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment body must have a comment of type string');
+        });
+    });
+    it('POST returns an object with error status 400 and message if new comment is invalid - comment is not a string', () => {
+      const articleId = data.articles[0]._id.toString();
+      const newComment = { comment: 123 };
+      return request(app)
+        .post(`/api/articles/${articleId}/comments`)
+        .send(newComment)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment body must have a comment of type string');
         });
     });
   });
@@ -155,15 +310,76 @@ describe('/api', () => {
           expect(res.body.comment.votes).to.equal(0);
         });
     });
+    it('PUT returns an object with error status 404 and message if given article Id does not exist', () => {
+      return request(app)
+        .put('/api/comments/123456789012345678901234?vote=up')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('PUT returns an object with error status 400 and message if given article Id is invalid', () => {
+      return request(app)
+        .put('/api/comments/12345678901234567890123?vote=up')
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment Id 12345678901234567890123 is invalid - should have 24 characters');
+        });
+    });
+    it('PUT returns an object with error status 400 and message if given query is invalid', () => {
+      const commentId = data.comments[0]._id.toString();
+      return request(app)
+        .put(`/api/comments/${commentId}?bote=down`)
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Vote query requires up or down vote in the format vote=up or vote=down');
+        });
+    });
     it('DELETE deletes a certain comment', () => {
       const commentId = data.comments[0]._id.toString();
       const { Comments } = require('../models/models');
-      console.log(typeof Comments)
       return request(app)
         .delete(`/api/comments/${commentId}`)
         .then(() => Comments.find({}).lean())
         .then(comments => {
           expect(comments.length).to.equal(1);
+        });
+    });
+    it('DELETE returns an object with error status 404 and message if given article Id does not exist', () => {
+      return request(app)
+        .delete('/api/comments/123456789012345678901234')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment with Id 123456789012345678901234 does not exist');
+        });
+    });
+    it('DELETE returns an object with error status 400 and message if given article Id is invalid', () => {
+      return request(app)
+        .delete('/api/comments/12345678901234567890123')
+        .expect(400)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('Comment Id 12345678901234567890123 is invalid - should have 24 characters');
+        });
+    });
+    it('DELETE returns an object with error status 401 and message if user is not authorised to delete comment', () => {
+      const commentId = data.comments[1]._id.toString();
+      return request(app)
+        .delete(`/api/comments/${commentId}`)
+        .expect(401)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('User is not authorised to delete this comment');
         });
     });
   });
@@ -180,6 +396,16 @@ describe('/api', () => {
           expect(res.body.user.username).to.equal(username);
         });
     });
+    it('GET returns an object with error status 404 and message if given user does not exist', () => {
+      return request(app)
+        .get('/api/users/carrot')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('User carrot does not exist');
+        });
+    });
   });
 
   describe('/users/:username/articles', () => {
@@ -193,6 +419,16 @@ describe('/api', () => {
           expect(res.body.articles).to.be.an('array');
           expect(res.body.articles.length).to.equal(2);
           expect(res.body.articles[0].created_by).to.equal(username);
+        });
+    });
+    it('GET returns an object with error status 404 and message if given user does not exist', () => {
+      return request(app)
+        .get('/api/users/carrot/articles')
+        .expect(404)
+        .then(res => {
+          expect(res.body).to.be.an('object');
+          expect(res.body.error).to.be.an('object');
+          expect(res.body.error.message).to.equal('User carrot does not exist');
         });
     });
   });
