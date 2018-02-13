@@ -17,7 +17,8 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use('/api', apiRouter);
-app.use('/*', (req, res) => res.status(404).send('Page not found'));
-app.use((err, req, res, next) => res.status(500).send(err));
+const error = { status: 404, message: 'Page not found' };
+app.use('/*', (req, res) => res.status(404).send({ error }));
+app.use((err, req, res, next) => res.status(err.error.status || 500).send(err));
 
 module.exports = app;
