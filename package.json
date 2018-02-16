@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha spec/*.spec.js",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "postinstall": "node seed/seed.js"
   },
   "author": "",
   "license": "ISC",
