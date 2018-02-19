@@ -7,6 +7,8 @@ Built with Node.js, Express.js, MongoDB and Mongoose.
 
 Testing was carried out using Mocha, Chai and Supertest.
 
+API has been deployed to Heroku [here](https://northcoders-news-be.herokuapp.com/api).
+
 ## Set Up
 - To check if ```Node.js``` is installed on your machine open a terminal window and enter:
   ```
@@ -36,11 +38,11 @@ Testing was carried out using Mocha, Chai and Supertest.
 
 To run this project you will need to clone this repository onto your local machine.
   ```
-  $ git clone https://github.com/dzewelina/BE-FT-northcoders-news.git
+  $ git clone https://github.com/dzewelina/Northcoders-News-BE.git
   ```
 Navigate inside the folder and install all dependencies by entering the following commands on your terminal window:
   ```
-  $ cd BE-FT-northcoders-news
+  $ cd Northcoders-News-BE
   $ npm install
   ```
 Open another terminal window and enter the following command to connect to the database and keep it running: 
