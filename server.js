@@ -16,6 +16,9 @@ const apiRouter = require('./routes');
 const app = express();
 app.use(bodyParser.json());
 
+app.route('/')
+  .get((req, res) => res.status(200).send({ status: 200, message: 'Working' }));
+
 app.use('/api', apiRouter);
 const error = { status: 404, message: 'Page not found' };
 app.use('/*', (req, res) => res.status(404).send({ error }));
