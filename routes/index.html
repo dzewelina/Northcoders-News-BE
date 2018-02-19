@@ -1,0 +1,68 @@
+<h1>Northcoders News</h1>
+<h2>API endpoints</h2>
+<table>
+<thead>
+<tr>
+<th width="150" style="text-align:centre">HTTP method</th>
+<th width="400" style="text-align:left">URI path</th>
+<th width="400" style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/topics</code></td>
+<td>Returns all the topics</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/topics/:topic/articles</code></td>
+<td>Returns all the articles for a certain topic</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/articles</code></td>
+<td>Returns all the articles</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/articles/:article_id/comments</code></td>
+<td>Returns all the comments for an individual article</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>POST</code></td>
+<td><code>/api/articles/:article_id/comments</code></td>
+<td>Adds a new comment to an article. Requires body with a comment key and value pair, e.g: {"comment": "This is my new comment"}</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/articles/:article_id</code></td>
+<td>Returns an article for specified id</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>PUT</code></td>
+<td><code>/api/articles/:article_id</code></td>
+<td>Increment or Decrement the votes of an article by one. Requires a vote query of 'up' or 'down', e.g: /api/articles/:article_id?vote=up</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>PUT</code></td>
+<td><code>/api/comments/:comment_id</code></td>
+<td>Increment or Decrement the votes of a comment by one. Requires a vote query of 'up' or 'down', e.g: /api/comments/:comment_id?vote=down</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>DELETE</code></td>
+<td><code>/api/comments/:comment_id</code></td>
+<td>Deletes a comment</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/users/:username</code></td>
+<td>Returns an object with the profile data for the specified user</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>GET</code></td>
+<td><code>/api/users/:username/articles</code></td>
+<td>Returns all the articles for a certain user</td>
+</tr>
+</tbody>
+</table>

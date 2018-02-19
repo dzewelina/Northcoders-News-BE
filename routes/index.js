@@ -9,6 +9,6 @@ router.use('/articles', articlesRouter);
 router.use('/comments', commentsRouter);
 router.use('/users', usersRouter);
 
-router.get('/', (req, res) => res.status(200).send('Northcoders News API'));
+router.use('/', (req, res) => res.status(200).sendFile(__dirname + '/index.html'));
 
 module.exports = router;
